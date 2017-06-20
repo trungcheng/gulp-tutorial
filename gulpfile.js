@@ -1,15 +1,15 @@
 const gulp 		= require('gulp'),
-	  htmlmin 	= require('gulp-html-minifier2'),
-	  uglify	= require('gulp-uglify'),
-	  uglifycss = require('gulp-uglifycss'),
-	  pump 		= require('pump'),
-	  concat	= require('gulp-concat'),
-	  babel		= require('gulp-babel'),
-	  sass		= require('gulp-sass'),
-	  gls 		= require('gulp-live-server'),
-	  os		= require('os'),
-	  open		= require('gulp-open'),
-	  jshint	= require('gulp-jshint');
+	htmlmin 	= require('gulp-html-minifier2'),
+	uglify		= require('gulp-uglify'),
+	uglifycss 	= require('gulp-uglifycss'),
+	pump 		= require('pump'),
+	concat		= require('gulp-concat'),
+	babel		= require('gulp-babel'),
+	sass		= require('gulp-sass'),
+	gls 		= require('gulp-live-server'),
+	os			= require('os'),
+	open		= require('gulp-open'),
+	jshint		= require('gulp-jshint');
 
 // Check coding convention for js file
 gulp.task('lint', function() {
@@ -20,10 +20,8 @@ gulp.task('lint', function() {
 
 gulp.task('moveIndex', () => {
 	gulp.src('./src/index.html')
-		// Remove all white spaces after compiled
-		.pipe(htmlmin({ collapseWhitespace: true }))
-		// Copy index.html file into /dist folder
-		.pipe(gulp.dest('./dist/'));
+		.pipe(htmlmin({ collapseWhitespace: true })) // Remove all white spaces after compiled
+		.pipe(gulp.dest('./dist/')); // Copy index.html file into /dist folder
 });
 
 gulp.task('javascript', (cb) => {
@@ -36,7 +34,7 @@ gulp.task('javascript', (cb) => {
 			uglify(),
 			gulp.dest('./dist/js/')
 	], cb); 
-	// Output: 'use strict';var one="Hello Trung 1",other="Other variables";
+	// Output: 'use strict';const one="Hello Trung 1",other="Other variables";
 });
 
 gulp.task('sass', () => {
