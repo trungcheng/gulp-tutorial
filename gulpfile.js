@@ -12,7 +12,7 @@ const gulp 		= require('gulp'),
 	jshint		= require('gulp-jshint');
 
 // Check coding convention for js file
-gulp.task('lint', function() {
+gulp.task('lint', () => {
     gulp.src(['./dist/js/*.js', './dist/**/*.js'])
         .pipe(jshint())
         .pipe(jshint.reporter('default'));
