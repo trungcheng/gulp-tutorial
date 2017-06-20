@@ -12,6 +12,7 @@
     "gulp-babel": "^6.1.2",
     "gulp-concat": "^2.6.1",
     "gulp-html-minifier2": "^1.1.8",
+    "gulp-jshint": "^2.0.4",
     "gulp-live-server": "0.0.30",
     "gulp-sass": "^3.1.0",
     "gulp-uglify": "^3.0.0",

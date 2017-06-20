@@ -1,14 +1,22 @@
-const gulp 		= require('gulp');
-const htmlmin 	= require('gulp-html-minifier2');
-const uglify	= require('gulp-uglify');
-const uglifycss = require('gulp-uglifycss');
-const pump 		= require('pump');
-const concat	= require('gulp-concat');
-const babel		= require('gulp-babel');
-const sass		= require('gulp-sass');
-const gls 		= require('gulp-live-server');
-const os		= require('os');
-const open		= require('gulp-open');
+const gulp 		= require('gulp'),
+	  htmlmin 	= require('gulp-html-minifier2'),
+	  uglify	= require('gulp-uglify'),
+	  uglifycss = require('gulp-uglifycss'),
+	  pump 		= require('pump'),
+	  concat	= require('gulp-concat'),
+	  babel		= require('gulp-babel'),
+	  sass		= require('gulp-sass'),
+	  gls 		= require('gulp-live-server'),
+	  os		= require('os'),
+	  open		= require('gulp-open'),
+	  jshint	= require('gulp-jshint');
+
+// Check coding convention for js file
+gulp.task('lint', function() {
+    gulp.src(['./dist/js/*.js', './dist/**/*.js'])
+        .pipe(jshint())
+        .pipe(jshint.reporter('default'));
+});
 
 gulp.task('moveIndex', () => {
 	gulp.src('./src/index.html')
@@ -63,7 +71,7 @@ gulp.task('serve', () => {
 });
 
 // Run all tasks parallel with "gulp" command.
-gulp.task('default', ['moveIndex', 'javascript', 'sass', 'serve'], () => {
+gulp.task('default', ['jshint', 'moveIndex', 'javascript', 'sass', 'serve'], () => {
 	// Watch the change of html, scss, js files.
 	gulp.watch('./src/*.html', ['moveIndex']);
 	gulp.watch('./src/assets/js/*.js', ['javascript']);
