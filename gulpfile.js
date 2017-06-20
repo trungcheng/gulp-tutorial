@@ -7,44 +7,69 @@ const concat	= require('gulp-concat');
 const babel		= require('gulp-babel');
 const sass		= require('gulp-sass');
 const gls 		= require('gulp-live-server');
+const os		= require('os');
+const open		= require('gulp-open');
 
 gulp.task('moveIndex', () => {
 	gulp.src('./src/index.html')
-		// Xóa tất cả khoảng trắng sau khi compiled
+		// Remove all white spaces after compiled
 		.pipe(htmlmin({ collapseWhitespace: true }))
-		// Copy file index vào thư mục dist
+		// Copy index.html file into /dist folder
 		.pipe(gulp.dest('./dist/'));
 });
 
 gulp.task('javascript', (cb) => {
-	/* Dùng pump + uglify khi muốn copy file, nối 
-	các biến khai báo với nhau bằng dấu phẩy sau khi compiled */
 	pump([
 		gulp.src('./src/assets/js/*.js')
 			.pipe(babel({
 				presets: ['es2015']
-			})), // biên dịch syntax es6/7
-			concat('main.js'), // gộp tất cả các file js thành 1 file
+			})), // compile es6/7 syntax
+			concat('main.js'), // combine all js files to one file.
 			uglify(),
 			gulp.dest('./dist/js/')
 	], cb); 
-	// Kết quả: 'use strict';var one="Hello Trung 1",other="Other variables";
+	// Output: 'use strict';var one="Hello Trung 1",other="Other variables";
 });
 
 gulp.task('sass', () => {
 	gulp.src('./src/assets/scss/*.scss')
-		.pipe(sass()) // biên dịch mã sass thành mã css thường
+		.pipe(sass()) // compile scss to css.
 		.pipe(uglifycss({
 			"maxLineLen": 80,
 			"uglyComments": true
-		})) // minified css viết hết trên 1 dòng liên tiếp, bỏ hết khoảng trắng.
-		.pipe(gulp.dest('./dist/css')) // copy tới thư mục /dist/css
+		})) // minified css on one line and remove all white spaces.
+		.pipe(gulp.dest('./dist/css')) // copy to /dist/css folder.
 });
 
 gulp.task('serve', () => {
 	const server = gls.static('./dist', 9999);
 	server.start();
+	// Watch the changing
+	gulp.watch(['./dist/css/*.css', './dist/js/*.js', './dist/index.html'], (file) => {
+		server.notify.apply(server, [file]);
+	});
+	// Detech browser type and open app on it automatically.
+	const browser = os.platform() === 'linux' ? 'google-chrome' : (
+		os.platform() === 'darwin' ? 'google chrome' : (
+			os.platform() === 'win32' ? 'chrome' : 'firefox'
+		)
+	);
+	const options = {
+		uri: 'http://localhost:9999',
+		app: browser
+	}
+	gulp.src('./dist/index.html')
+		.pipe(open(options));
 });
 
-// Chạy tất cả các task song song với 1 câu lệnh "gulp"
-gulp.task('default', ['moveIndex', 'javascript', 'sass', 'serve']);
+// Run all tasks parallel with "gulp" command.
+gulp.task('default', ['moveIndex', 'javascript', 'sass', 'serve'], () => {
+	// Watch the change of html, scss, js files.
+	gulp.watch('./src/*.html', ['moveIndex']);
+	gulp.watch('./src/assets/js/*.js', ['javascript']);
+	gulp.watch('./src/assets/scss/*.scss', ['sass']);
+	console.log('Watching for files');
+});
+
+// Run develop environment with "gulp build" command.
+gulp.task('build', ['moveIndex', 'javascript', 'sass']);
