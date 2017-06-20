@@ -43,6 +43,7 @@ gulp.task('sass', () => {
 
 gulp.task('serve', () => {
 	const server = gls.static('./dist', 9999);
+	server.start();
 });
 
 // Chạy tất cả các task song song với 1 câu lệnh "gulp"
